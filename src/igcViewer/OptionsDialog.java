@@ -35,6 +35,8 @@ public class OptionsDialog extends JDialog {
   JTextField debugLevel;
   JTextField SRTM_cacheFolder;
   JTextField Xcm_File;
+  JTextField airSpace_File;
+
   OptionsDialog(JFrame parent)
   {
     super(parent, Dialog.ModalityType.APPLICATION_MODAL);
@@ -66,6 +68,14 @@ public class OptionsDialog extends JDialog {
     JButton bXcmBrowse = new JButton("Browse");
     jpXcm.add(bXcmBrowse);
 
+    // Air space file
+    airSpace_File = new JTextField(IgcViewerPrefs.getAirSpaceFile());
+    JPanel jpAirSpace = new JPanel();
+    jpAirSpace.add(new JLabel("Air space file:"));
+    jpAirSpace.add(airSpace_File);
+    JButton bAirSpaceBrowse = new JButton("Browse");
+    jpAirSpace.add(bAirSpaceBrowse);
+
     JButton bOk = new JButton("Ok");
     //b2.setHorizontalAlignment(SwingConstants.CENTER);
     bOk.addActionListener(new ActionListener() {
@@ -83,12 +93,14 @@ public class OptionsDialog extends JDialog {
     JPanel bOkCancel = new JPanel();
     bOkCancel.add(bOk);
     bOkCancel.add(bCancel);
+
     Container cp = getContentPane();
     // add label, text field and button one after another into a single column
     cp.setLayout(new BoxLayout(cp, BoxLayout.Y_AXIS));
     cp.add(jpDebugLevel);
     cp.add(jpSrtm);
     cp.add(jpXcm);
+    cp.add(jpAirSpace);
     cp.add(bOkCancel, BorderLayout.SOUTH);
 
     Point pt = parent.getLocationOnScreen();
@@ -121,6 +133,7 @@ public class OptionsDialog extends JDialog {
     {
         IgcViewerPrefs.setSrtmCache(SRTM_cacheFolder.getText(), this);
         IgcViewerPrefs.setXcmFile(Xcm_File.getText(), this);
+        IgcViewerPrefs.setAirSpaceFile(airSpace_File.getText(), this);
         setVisible(false);
     }
   }
@@ -129,4 +142,6 @@ public class OptionsDialog extends JDialog {
     setVisible(false);
     //dispose();
   }
+
+  private static final long serialVersionUID = 4469562424472602766L;
 }

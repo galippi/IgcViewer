@@ -106,6 +106,7 @@ public class IgcViewerPrefs {
   {
       xcmFileChangeListener = al;
   }
+
   static String xcmFile;
   static public String getXcmFile()
   {
@@ -119,5 +120,26 @@ public class IgcViewerPrefs {
       IgcViewerPrefs.put("XCM_file", xcmFile);
       if ((xcmFileChangeListener != null) && (issuer != null))
           xcmFileChangeListener.actionPerformed(new ActionEvent(issuer, ActionEvent.ACTION_PERFORMED, null));
+  }
+
+  static ActionListener airSpaceFileChangeListener;
+  static void setAirSpaceFileChangeListener(ActionListener al)
+  {
+      airSpaceFileChangeListener = al;
+  }
+
+  static String airSpaceFile;
+  static public String getAirSpaceFile()
+  {
+      if (airSpaceFile == null)
+          airSpaceFile = IgcViewerPrefs.get("AirSpace_file", "");
+      return airSpaceFile;
+  }
+  static public void setAirSpaceFile(String _airSpaceFile, Object issuer)
+  {
+      airSpaceFile = _airSpaceFile;
+      IgcViewerPrefs.put("AirSpace_file", xcmFile);
+      if ((airSpaceFileChangeListener != null) && (issuer != null))
+          airSpaceFileChangeListener.actionPerformed(new ActionEvent(issuer, ActionEvent.ACTION_PERFORMED, null));
   }
 }
