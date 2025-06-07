@@ -8,10 +8,12 @@ package igcViewer;
 import igc.igc;
 import java.awt.Color;
 
+import hgt.HgtFile;
+import hgt.HgtFileCache;
 import utils.Sprintf;
 import utils.dbg;
 import utils.threadImage;
-
+import igc.IGC_point;
 import igc.IgcFiles;
 
 /**
@@ -38,6 +40,27 @@ public class BaroImage extends threadImage
     { /* baro(s) shall be painted */
       AltitudeScale = (img.getHeight() - 1) / (double)(dH);
       double TimeScale = (img.getWidth() -1) / (double)(dT);
+      if (igcFiles.size() == 1) {
+          igc igc = igcFiles.get(0);
+          g.setColor(new Color(207, 96, 6)); // brown
+          HgtFile hgt = null;
+          for (int t = 0; t < igc.size(); t++)
+          {
+            IGC_point pt = igc.get(t);
+            int x1 = (int)((pt.t.t - igcFiles.t_min) * TimeScale + 0.5);
+            //int h = -9999;
+            if (hgt != null)
+                if (!hgt.isIn(pt.lat.val(), pt.lon.val()))
+                    hgt = null;
+            if (hgt == null)
+                hgt = HgtFileCache.get(pt.lat.val(), pt.lon.val(), true);
+            if (hgt != null) {
+                int h = hgt.get(pt.lat.val(), pt.lon.val());
+                int y1 = img.getHeight() - (int)((h - igcFiles.alt_min) * AltitudeScale);
+                g.fillRect(x1, y1, 3, 3);
+            }
+          }
+      }
       for (int i = 0; i < igcFiles.size(); i++)
       {
         igc igc = igcFiles.get(i);
