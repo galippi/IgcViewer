@@ -20,6 +20,7 @@ public class HgtImage  extends threadImage implements ActionListener {
       super(parent);
       this.gu = new GeoUtil(gu);
       mapHeightColor = new MapHeightColor();
+      HgtFileCache.setCacheFolder(IgcViewerPrefs.getSrtmCache());
       IgcViewerPrefs.setSrtmCacheChangeListener(this);
     }
     MapHeightColor mapHeightColor;
@@ -48,7 +49,7 @@ public class HgtImage  extends threadImage implements ActionListener {
                 {
                     if (isCancelled())
                         return;
-                    HgtFile hgtFile = hgtFileCache.get(lat, lon, false);
+                    HgtFile hgtFile = HgtFileCache.get(lat, lon, false);
                     if (hgtFile != null)
                     {
                         if (hgtFile.loadAsync() == HgtFileState.HgtFileLoaded)
@@ -115,10 +116,10 @@ public class HgtImage  extends threadImage implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         // hgtFileCache is changed
-        hgtFileCache.setCacheFolder(IgcViewerPrefs.getSrtmCache());
+        HgtFileCache.setCacheFolder(IgcViewerPrefs.getSrtmCache());
         repaint();
     }
 
     GeoUtil gu;
-    HgtFileCache hgtFileCache = new HgtFileCache(IgcViewerPrefs.getSrtmCache());
+    //HgtFileCache hgtFileCache = new HgtFileCache(IgcViewerPrefs.getSrtmCache());
 }
