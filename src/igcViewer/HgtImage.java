@@ -1,10 +1,8 @@
 package igcViewer;
 
 import java.awt.Color;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 
 import hgt.HgtFile;
 import hgt.HgtFileCache;
@@ -67,7 +65,7 @@ public class HgtImage  extends threadImage implements ActionListener {
                             int yEnd = (y1 >= img.getHeight() ? img.getHeight() - 1 : y1);
                             for (int y = yStart; y < yEnd; y++)
                             {
-                                double pointLat = lat + (y - y0) / (double)dy;
+                                double pointLat = lat + (y1 - y) / (double)dy;
                                 for(int x = xStart; x < xEnd; x++)
                                 {
                                     double pointLon = lon + (x - x0) / (double)dx;
