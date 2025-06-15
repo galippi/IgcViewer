@@ -138,7 +138,7 @@ public class IgcViewerPrefs {
   static public void setAirSpaceFile(String _airSpaceFile, Object issuer)
   {
       airSpaceFile = _airSpaceFile;
-      IgcViewerPrefs.put("AirSpace_file", xcmFile);
+      IgcViewerPrefs.put("AirSpace_file", airSpaceFile);
       if ((airSpaceFileChangeListener != null) && (issuer != null))
           airSpaceFileChangeListener.actionPerformed(new ActionEvent(issuer, ActionEvent.ACTION_PERFORMED, null));
   }
