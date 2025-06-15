@@ -25,7 +25,7 @@ public class AirspaceImage extends threadImage implements ActionListener
   {
     super(parent);
     this.gu = new GeoUtil(gu);
-    airSpaces = new AirSpaces();
+    airSpaces = new AirSpaces(IgcViewerPrefs.getAirSpaceFile());
     IgcViewerPrefs.setAirSpaceFileChangeListener(this);
   }
   @Override
