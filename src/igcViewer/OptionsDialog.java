@@ -436,6 +436,7 @@ public class OptionsDialog extends JDialog {
     //columnModel.getColumn(0).setPreferredWidth(IgcViewerPrefs.get("OptionsDialogCol0W", 100));
     columnModel.getColumn(0).setMinWidth(150);
     columnModel.getColumn(0).setMaxWidth(150);
+    //columnModel.getColumn(1).setMinWidth(300);
     columnModel.getColumn(1).setPreferredWidth(IgcViewerPrefs.get("OptionsDialogCol1W", 200));
     columnModel.getColumn(1).setResizable(true);
 
@@ -448,20 +449,12 @@ public class OptionsDialog extends JDialog {
     }
 
     table.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_LAST_COLUMN);
-    //table.setEditingColumn(0);
-    //table.setEditingRow(0);
     table.setMaximumSize(new java.awt.Dimension(1000, 1000));
     table.setMinimumSize(new java.awt.Dimension(100, 100));
     table.setPreferredSize(new java.awt.Dimension(200, 120));
 
     //add the table to the frame
-    if (false) {
-        this.add(new JScrollPane(table));
-    }else {
-        JScrollPane jScrollPane = new JScrollPane();
-        jScrollPane.setViewportView(table);
-        this.add(jScrollPane);
-    }
+    this.add(new JScrollPane(table));
 
     JButton bOk = new JButton("Ok");
     //b2.setHorizontalAlignment(SwingConstants.CENTER);
