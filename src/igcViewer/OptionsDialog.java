@@ -31,6 +31,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.SpringLayout;
 import javax.swing.event.CellEditorListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
@@ -99,12 +100,24 @@ class PanelFileBrowse extends JPanel
         parent = _parent;
         add(filename = new JTextField(defaultValue));
         JButton bBrowse = new JButton("Browse");
+        bBrowse.setSize(50, 25);
         add(bBrowse);
         bBrowse.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 browseHandler();
             }
         });
+
+        SpringLayout layout = new SpringLayout();
+        setLayout(layout);
+
+        layout.putConstraint(SpringLayout.NORTH, filename,  5, SpringLayout.NORTH, this);
+        layout.putConstraint(SpringLayout.WEST,  filename,  5, SpringLayout.WEST,  this);
+        layout.putConstraint(SpringLayout.EAST,  filename, -5, SpringLayout.WEST,  bBrowse);
+
+        layout.putConstraint(SpringLayout.NORTH, bBrowse,   0, SpringLayout.NORTH, filename);
+        layout.putConstraint(SpringLayout.WEST,  bBrowse, -80, SpringLayout.EAST,  this);
+        layout.putConstraint(SpringLayout.EAST,  bBrowse,  -5, SpringLayout.EAST,  this);
     }
 
     void browseHandler() {
@@ -417,11 +430,14 @@ public class OptionsDialog extends JDialog {
         //column.setMaxWidth(200);
         //column.setWidth(10);
         //column.setPreferredWidth(10);
-        column.setResizable(true);
+        column.setResizable(false);
         column.setHeaderValue(columnNames[i]);
     }
-    columnModel.getColumn(0).setPreferredWidth(IgcViewerPrefs.get("OptionsDialogCol0W", 100));
+    //columnModel.getColumn(0).setPreferredWidth(IgcViewerPrefs.get("OptionsDialogCol0W", 100));
+    columnModel.getColumn(0).setMinWidth(150);
+    columnModel.getColumn(0).setMaxWidth(150);
     columnModel.getColumn(1).setPreferredWidth(IgcViewerPrefs.get("OptionsDialogCol1W", 200));
+    columnModel.getColumn(1).setResizable(true);
 
     for (int i = 0; i < odrlh.getRowCount(); i++)
     {
