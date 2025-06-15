@@ -420,6 +420,8 @@ public class OptionsDialog extends JDialog {
         column.setResizable(true);
         column.setHeaderValue(columnNames[i]);
     }
+    columnModel.getColumn(0).setPreferredWidth(IgcViewerPrefs.get("OptionsDialogCol0W", 100));
+    columnModel.getColumn(1).setPreferredWidth(IgcViewerPrefs.get("OptionsDialogCol1W", 200));
 
     for (int i = 0; i < odrlh.getRowCount(); i++)
     {
@@ -429,7 +431,7 @@ public class OptionsDialog extends JDialog {
         row.setRowHeight(table, i);
     }
 
-    table.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_NEXT_COLUMN);
+    table.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_LAST_COLUMN);
     //table.setEditingColumn(0);
     //table.setEditingRow(0);
     table.setMaximumSize(new java.awt.Dimension(1000, 1000));
@@ -505,6 +507,9 @@ public class OptionsDialog extends JDialog {
         IgcViewerPrefs.put("OptionsDialogY", getY());
         IgcViewerPrefs.put("OptionsDialogH", getHeight());
         IgcViewerPrefs.put("OptionsDialogW", getWidth());
+        javax.swing.table.TableColumnModel columnModel = table.getColumnModel();
+        IgcViewerPrefs.put("OptionsDialogCol0W", columnModel.getColumn(0).getWidth());
+        IgcViewerPrefs.put("OptionsDialogCol1W", columnModel.getColumn(1).getWidth());
 
     }catch (Exception e)
     {
