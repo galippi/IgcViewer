@@ -1,4 +1,7 @@
-/*
+/**
+ *
+ * @author liptakok
+ * 
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -6,27 +9,29 @@
 package igcViewer;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dialog;
 import java.awt.Dimension;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.util.EventObject;
 import java.util.Vector;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.event.CellEditorListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
@@ -34,10 +39,6 @@ import javax.swing.table.TableColumn;
 
 import utils.dbg;
 
-/**
- *
- * @author liptakok
- */
 abstract class RowHandler
 {
     abstract String getName();
@@ -54,13 +55,154 @@ abstract class RowHandler
         return id;
     }
 
+    void setRowHeight(JTable parent, int rowId) {
+        // do nothing by default
+    }
+
+    public void setParent(OptionDialogRowListHandler optionDialogRowListHandler) {
+        parent = optionDialogRowListHandler;
+    }
+
     int id;
+    OptionDialogRowListHandler parent;
+}
+
+abstract class RowHandlerComplex extends RowHandler implements TableCellRenderer, TableCellEditor
+{
+    abstract String getName();
+    abstract Object getValue();
+    abstract void setValue(Object newValue) throws Exception;
+    abstract void update();
+
+    public TableCellEditor getCellEditor() { // this has to be overwritten, if the row handler is not a text box based
+        return this;
+    }
+
+    @Override
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+            int row, int column) {
+        return component;
+    }
+
+    void setComponent(Component _component) {
+        component = _component;
+    }
+
+    Component component;
+}
+
+class PanelFileBrowse extends JPanel
+{
+    JTextField filename;
+    RowHandlerFileBrowse parent;
+    PanelFileBrowse(RowHandlerFileBrowse _parent, String defaultValue) {
+        parent = _parent;
+        add(filename = new JTextField(defaultValue));
+        JButton bBrowse = new JButton("Browse");
+        add(bBrowse);
+        bBrowse.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                browseHandler();
+            }
+        });
+    }
+
+    void browseHandler() {
+        dbg.println(9, "PanelFileBrowse.browseHandler");
+        //Create a file chooser
+        final JFileChooser fc = new JFileChooser();
+        fc.setDialogTitle(parent.getName());
+        parent.setFilter(fc);
+
+        //In response to a button click:
+        int returnVal = fc.showOpenDialog(this);
+        if (returnVal == JFileChooser.APPROVE_OPTION)
+        {
+            java.io.File file = fc.getSelectedFile();
+            dbg.println(9, "Browse ok " + file.getAbsolutePath() + ".");
+            filename.setText(file.getAbsolutePath());
+            try {
+                parent.set(filename.getText());
+            } catch (Exception e) {
+                dbg.println(9, "Browse exception e=" + e.toString());
+            }
+        } else
+        {
+            dbg.println(9, "Browse cancelled by user.");
+        }
+    }
+
+    private static final long serialVersionUID = -8707830580091056209L;
+}
+
+abstract class RowHandlerFileBrowse extends RowHandlerComplex
+{
+    RowHandlerFileBrowse() {
+        setComponent(new PanelFileBrowse(this, (String)getValue()));
+    }
+
+    protected abstract void setFilter(JFileChooser fc);
+
+    public void set(String text) {
+        parent.parent.setValueAt(text, getId(), OptionsDialog.colValue);
+    }
+
+    @Override
+    void setRowHeight(JTable parent, int rowId) {
+        parent.setRowHeight(rowId, 40);
+    }
+
+    @Override
+    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+        dbg.println(9, "RowHandlerFileBrowse.getTableCellEditorComponent");
+        return component;
+    }
+
+    @Override
+    public Object getCellEditorValue() {
+        dbg.println(9, "RowHandlerFileBrowse.getCellEditorValue");
+        return null;
+    }
+
+    @Override
+    public boolean isCellEditable(EventObject anEvent) {
+        dbg.println(9, "RowHandlerFileBrowse.isCellEditable");
+        return true;
+    }
+
+    @Override
+    public boolean shouldSelectCell(EventObject anEvent) {
+        dbg.println(9, "RowHandlerFileBrowse.shouldSelectCell");
+        return false;
+    }
+
+    @Override
+    public boolean stopCellEditing() {
+        dbg.println(9, "RowHandlerFileBrowse.stopCellEditing");
+        return false;
+    }
+
+    @Override
+    public void cancelCellEditing() {
+        dbg.println(9, "RowHandlerFileBrowse.getTableCellEditorComponent");
+    }
+
+    @Override
+    public void addCellEditorListener(CellEditorListener l) {
+        dbg.println(9, "RowHandlerFileBrowse.cancelCellEditing");
+    }
+
+    @Override
+    public void removeCellEditorListener(CellEditorListener l) {
+        dbg.println(9, "RowHandlerFileBrowse.removeCellEditorListener");
+    }
 }
 
 class OptionDialogRowListHandler
 {
     RowHandler addRow(RowHandler row)
     {
+        row.setParent(this);
         row.id = rows.size();
         rows.add(row);
         return row;
@@ -77,6 +219,12 @@ class OptionDialogRowListHandler
     }
 
     Vector<RowHandler> rows = new Vector<>();
+
+    public void setTable(JTable table) {
+        parent = table;
+    }
+
+    JTable parent;
 }
 
 class RowHandlerDebugLevel extends RowHandler
@@ -135,7 +283,7 @@ class RowHandlerSrtmCacheFolder extends RowHandler
     String newValue = null;
 }
 
-class RowHandlerXcmFile extends RowHandler
+class RowHandlerXcmFile extends RowHandlerFileBrowse
 {
     @Override
     String getName() {
@@ -158,10 +306,17 @@ class RowHandlerXcmFile extends RowHandler
             IgcViewerPrefs.setXcmFile(newValue, this);
     }
 
+    @Override
+    protected void setFilter(JFileChooser fc) {
+        fc.setFileFilter(
+                new javax.swing.filechooser.FileNameExtensionFilter(
+                    "XCM file", "xcm"));
+    }
+
     String newValue = null;
 }
 
-class RowHandlerAirSpaceFile extends RowHandler
+class RowHandlerAirSpaceFile extends RowHandlerFileBrowse
 {
     @Override
     String getName() {
@@ -184,15 +339,22 @@ class RowHandlerAirSpaceFile extends RowHandler
             IgcViewerPrefs.setAirSpaceFile(newValue, this);
     }
 
+    @Override
+    protected void setFilter(JFileChooser fc) {
+        fc.setFileFilter(
+                new javax.swing.filechooser.FileNameExtensionFilter(
+                    "XCM file", "xcm"));
+
+        fc.setFileFilter(
+                new javax.swing.filechooser.FileNameExtensionFilter(
+                    "Open air file", "txt"));
+    }
+
     String newValue = null;
 }
 
 
 public class OptionsDialog extends JDialog {
-  JTextField debugLevel;
-  JTextField SRTM_cacheFolder;
-  JTextField Xcm_File;
-  JTextField airSpace_File;
   JTable table;
 
   OptionDialogRowListHandler odrlh = new OptionDialogRowListHandler();
@@ -201,8 +363,8 @@ public class OptionsDialog extends JDialog {
   final String[] columnNames = new String[] {
       "Property name", "Property value"
   };
-  final int colProperty = 0;
-  final int colValue = 1;
+  final static int colProperty = 0;
+  final static int colValue = 1;
 
   OptionsDialog(JFrame parent)
   {
@@ -245,13 +407,16 @@ public class OptionsDialog extends JDialog {
         private static final long serialVersionUID = 2641690847759012960L;
     };
 
+    odrlh.setTable(table);
+
     javax.swing.table.TableColumnModel columnModel = table.getColumnModel();
     for (int i = 0; i < columnNames.length; i++)
     {
         TableColumn column = columnModel.getColumn(i);
-        column.setMinWidth(10);
-        column.setMaxWidth(200);
-        column.setWidth(10);
+        //column.setMinWidth(10);
+        //column.setMaxWidth(200);
+        //column.setWidth(10);
+        //column.setPreferredWidth(10);
         column.setResizable(true);
         column.setHeaderValue(columnNames[i]);
     }
@@ -261,17 +426,24 @@ public class OptionsDialog extends JDialog {
         RowHandler row = odrlh.get(i);
         table.setValueAt(row.getName() + ":", i, colProperty);
         table.setValueAt(row.getValue(),      i, colValue);
+        row.setRowHeight(table, i);
     }
 
-    //add the table to the frame
-    this.add(new JScrollPane(table));
+    table.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_NEXT_COLUMN);
+    //table.setEditingColumn(0);
+    //table.setEditingRow(0);
+    table.setMaximumSize(new java.awt.Dimension(1000, 1000));
+    table.setMinimumSize(new java.awt.Dimension(100, 100));
+    table.setPreferredSize(new java.awt.Dimension(200, 120));
 
-    JLabel l2 = new JLabel("Debug level:");
-    l2.setHorizontalAlignment(JTextField.LEFT);
-    debugLevel = new JTextField("" + dbg.get(), 5);
-    //debugLevel.setSize(100,20);
-    debugLevel.setHorizontalAlignment(JTextField.TRAILING);
-    //debugLevel.
+    //add the table to the frame
+    if (false) {
+        this.add(new JScrollPane(table));
+    }else {
+        JScrollPane jScrollPane = new JScrollPane();
+        jScrollPane.setViewportView(table);
+        this.add(jScrollPane);
+    }
 
     JButton bOk = new JButton("Ok");
     //b2.setHorizontalAlignment(SwingConstants.CENTER);
