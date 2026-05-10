@@ -22,6 +22,7 @@ import java.awt.Color;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import hgt.HgtFileCache;
 import utils.dbg;
 
 /**
@@ -136,6 +137,11 @@ public class MapPanel extends javax.swing.JPanel
     }
     public void mouseHandler(MouseEvent e) {
       dbg.println(19, "mouseHandler "+e.toString()+" x=" + e.getX() + " y=" + e.getY() + " button=" + e.getButton());
+      {
+          double lon = gu.getPosLon(e.getX());
+          double lat = gu.getPosLat(this.getHeight() - e.getY());
+          dbg.println(19, "pos x=" + e.getX() + " y=" + e.getY() + " lon=" + lon + " lat=" + lat + " h=" + HgtFileCache.get(lat,  lon));
+      }
       if (e.getID() == e.MOUSE_PRESSED)
       {
         if ((!m_capture) && (e.getButton() == e.BUTTON1))
