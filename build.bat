@@ -1,11 +1,8 @@
 @echo off
 cls
+@call config.bat
 
-set JAR_FILE=IgcViewer.jar
-
-set JAVA=C:\Program Files\Java\jdk1.8.0_152
-::set CYGWIN=C:\Programok\cygwin
-set CYGWIN=C:\KBApps\DevEnv\Cygwin\V2_3_1
+set JAR_FILE=%APP%
 
 @set PATH=%CYGWIN%\bin\;%PATH%
 
@@ -14,7 +11,7 @@ set CYGWIN=C:\KBApps\DevEnv\Cygwin\V2_3_1
 
 :: updating source list
 del /f /Q javafiles
-%CYGWIN%\bin\bash.exe -i -c "find src -iname '*.java' ! -name AirSpaceParserUnitTest.java >javafiles"
+%CYGWIN%\bin\bash.exe -i -c "find src -iname '*.java' ! -name PythonStructUnitTest.java >javafiles"
 mkdir bin
 del /f /q /s *.class
 ::"C:\Program Files (x86)\Java\jdk1.7.0_11\bin\javac" -Werror -d bin -cp patzh-to-jar;path-to-jar2 @javafiles
