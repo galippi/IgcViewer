@@ -356,10 +356,6 @@ class RowHandlerAirSpaceFile extends RowHandlerFileBrowse
     protected void setFilter(JFileChooser fc) {
         fc.setFileFilter(
                 new javax.swing.filechooser.FileNameExtensionFilter(
-                    "XCM file", "xcm"));
-
-        fc.setFileFilter(
-                new javax.swing.filechooser.FileNameExtensionFilter(
                     "Open air file", "txt"));
     }
 
