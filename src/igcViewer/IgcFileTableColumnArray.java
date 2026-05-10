@@ -410,7 +410,7 @@ public class IgcFileTableColumnArray {
   }
   final void add(IgcFileTableColumnBase newCol)
   {
-    colIdx.put(newCol.getColName(), new Integer(columns.size()));
+    colIdx.put(newCol.getColName(), Integer.valueOf(columns.size()));
     columns.add(newCol);
   }
   public IgcFileTableColumnBase get(int idx)
