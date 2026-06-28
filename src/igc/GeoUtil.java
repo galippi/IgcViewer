@@ -134,6 +134,11 @@ public class GeoUtil
   {
     return (int)((lat_max - lat) * zoom + 0.5);
   }
+
+  public int getRadius(double radius_m) {
+      return (int)(radius_m * zoom * 50);
+  }
+
   public int getPosXOffs(double lon)
   {
     return getPosX(lon) + x_offs;
