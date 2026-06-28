@@ -293,7 +293,13 @@ public class igc {
         { /* G-record - not yet processed */
         }else
         if (line.charAt(0) == 'L')
-        { /* G-record - not yet processed */
+        { /* L-record - not yet processed */
+        }else
+        if (line.charAt(0) == 'J')
+        { /* J-record - not yet processed */
+        }else
+        if (line.charAt(0) == 'K')
+        { /* K-record - not yet processed */
         }else
         {
           if (!line.trim().isEmpty())
