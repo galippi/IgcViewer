@@ -7,8 +7,14 @@
 [submodule "utils"]
 	path = src/utils
 	url = S:\\git\\utils.java
+[submodule "BufferedRandomAccessFile"]
+	path = src/utils/BufferedRandomAccessFile
+	url = s:\\git\\BufferedRandomAccessFile.java.git
 [submodule "xcm"]
 	path = src/xcm
+	url = S:\\git\\xcm
+[submodule "airspace"]
+	path = src/xcm/airspace
 	url = S:\\git\\xcm
 [submodule "IgcDataStream"]
 	path = src/IgcDataStream
